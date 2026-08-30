@@ -106,7 +106,12 @@
 
   /* ================= WINDOWS ================= */
   .win{
-    position:absolute; background:var(--surface); border:1px solid var(--border);
+    position:absolute;
+    background:
+      radial-gradient(circle 320px at var(--lx,-900px) var(--ly,-900px), rgba(57,255,138,0.4), transparent 70%),
+      var(--surface);
+    background-blend-mode:screen;
+    border:1px solid var(--border);
     border-radius:8px; box-shadow:0 20px 50px -20px rgba(0,0,0,.7), 0 0 0 1px rgba(0,0,0,.2);
     display:flex; flex-direction:column; min-width:260px; min-height:180px;
     opacity:0; transform:scale(.97); pointer-events:none; transition:opacity .18s ease, transform .18s ease;
@@ -494,14 +499,17 @@
 
   /* ============ CURSOR-REACTIVE GLOW ============ */
   (function(){
-    var glow = document.getElementById('bg-glow');
-    var reveal = document.getElementById('bg-reveal');
-    var scan = document.getElementById('bg-scan');
     var decor = document.getElementById('bg-decor');
     var mx = window.innerWidth/2, my = window.innerHeight/2, gx=mx, gy=my;
     function setVars(x,y){
       decor.style.setProperty('--gx', x+'px');
       decor.style.setProperty('--gy', y+'px');
+      var winEls = document.querySelectorAll('.win');
+      for(var i=0;i<winEls.length;i++){
+        var r = winEls[i].getBoundingClientRect();
+        winEls[i].style.setProperty('--lx', (x - r.left)+'px');
+        winEls[i].style.setProperty('--ly', (y - r.top)+'px');
+      }
     }
     setVars(mx,my);
     window.addEventListener('pointermove', function(e){ mx = e.clientX; my = e.clientY; if(reduceMotion){ setVars(mx,my); } });
